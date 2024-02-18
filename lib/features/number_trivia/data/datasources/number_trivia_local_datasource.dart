@@ -1,5 +1,7 @@
 import 'dart:convert';
 
+import 'package:clean_architecture/core/constants/app_strings.dart';
+
 import '../../../../core/errors/exceptions.dart';
 import '../../../../core/network/local/hive.dart';
 import '../models/trivia_model.dart';
@@ -30,7 +32,7 @@ class NumberTriviaLocalDataSouceImpl implements NumberTriviaLocalDataSouce {
     final hiveBox = await hive.openHiveBox(boxName);
     final result = await hiveBox.get(key);
     if (result == null) {
-      throw LocalException(errorMessage: 'no data available');
+      throw LocalException(errorMessage: AppString.noDataFound);
     }
 
     return NumberTriviaModel.fromJson(jsonDecode(result));

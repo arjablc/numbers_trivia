@@ -11,6 +11,8 @@ class AppString {
 
   static const String serverFailureMessage = 'Server Failure';
   static const String cacheFailureMessage = 'Cache Failure';
+  static const String noDataFound =
+      "No Trivia Saved, Connect to Internet and retry";
   static const String invalidInputFailureMessage =
       'Invalid Input - The number must be a positive integer or zero.';
 }

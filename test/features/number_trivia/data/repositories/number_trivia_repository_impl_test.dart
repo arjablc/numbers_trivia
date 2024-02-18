@@ -1,4 +1,6 @@
+import 'package:clean_architecture/core/constants/app_strings.dart';
 import 'package:dartz/dartz.dart';
+import 'package:flutter_launcher_icons/constants.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
@@ -89,7 +91,7 @@ void main() {
         final result = await mockRepository.getSpecifiedTrivia(tNumber);
         verify(mockRemoteDatasource.getSpecifiedNumberTrivia(tNumber));
         verifyZeroInteractions(mockLoclDatasource);
-        expect(result, equals(Left(ServerFailure())));
+        expect(result, equals(const Left(ServerFailure())));
       });
     });
 
@@ -106,12 +108,13 @@ void main() {
       });
       test('should return a LocalException when no cache present', () async {
         when(mockLoclDatasource.getLastNumberTrivia())
-            .thenThrow(LocalException());
+            .thenThrow(LocalException(errorMessage: AppString.noDataFound));
 
         final result = await mockRepository.getSpecifiedTrivia(tNumber);
         verifyZeroInteractions(mockRemoteDatasource);
         verify(mockLoclDatasource.getLastNumberTrivia());
-        expect(result, equals(Left(LocalFailure())));
+        expect(result,
+            equals(const Left(LocalFailure(message: AppString.noDataFound))));
       });
     });
   });
@@ -150,7 +153,7 @@ void main() {
         final result = await mockRepository.getRandomTrivia();
         verify(mockRemoteDatasource.getRandomNumberTrivia());
         verifyZeroInteractions(mockLoclDatasource);
-        expect(result, equals(Left(ServerFailure())));
+        expect(result, equals(const Left(ServerFailure())));
       });
     });
     offlineTests(() {
@@ -165,12 +168,13 @@ void main() {
       });
       test('should return a LocalException when no cache present', () async {
         when(mockLoclDatasource.getLastNumberTrivia())
-            .thenThrow(LocalException());
+            .thenThrow(LocalException(errorMessage: AppString.noDataFound));
 
         final result = await mockRepository.getRandomTrivia();
         verifyNoMoreInteractions(mockRemoteDatasource);
         verify(mockLoclDatasource.getLastNumberTrivia());
-        expect(result, equals(Left(LocalFailure())));
+        expect(result,
+            equals(const Left(LocalFailure(message: AppString.noDataFound))));
       });
     });
   });

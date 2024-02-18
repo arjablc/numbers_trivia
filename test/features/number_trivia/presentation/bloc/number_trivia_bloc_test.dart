@@ -87,7 +87,9 @@ void main() {
 
     void failedUsecase(bool isServer) {
       return when(getSpecified.call(param: anyNamed('param'))).thenAnswer(
-          (_) async => Left(isServer ? ServerFailure() : LocalFailure()));
+          (_) async => Left(isServer
+              ? ServerFailure()
+              : LocalFailure(message: AppString.noDataFound)));
     }
 
     blocTest<NumberTriviaBloc, NumberTriviaState>(
@@ -148,7 +150,9 @@ void main() {
 
     void failedUsecase(bool isServer) {
       return when(getRandom.call(param: anyNamed('param'))).thenAnswer(
-          (_) async => Left(isServer ? ServerFailure() : LocalFailure()));
+          (_) async => Left(isServer
+              ? const ServerFailure()
+              : const LocalFailure(message: AppString.noDataFound)));
     }
 
     blocTest<NumberTriviaBloc, NumberTriviaState>(

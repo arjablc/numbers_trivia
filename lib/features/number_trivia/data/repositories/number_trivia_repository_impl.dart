@@ -47,8 +47,8 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
       try {
         final localTrivia = await localDataSouce.getLastNumberTrivia();
         return Right(localTrivia);
-      } on LocalException {
-        return Left(LocalFailure());
+      } on LocalException catch (e) {
+        return Left(LocalFailure(message: e.errorMessage));
       }
     }
   }

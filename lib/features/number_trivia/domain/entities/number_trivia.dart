@@ -1,10 +1,8 @@
 import 'package:equatable/equatable.dart';
 
-enum Type { trivia, math }
-
 class NumberTrivia extends Equatable {
   final String text;
-  final int number;
+  final num number;
 
   const NumberTrivia({
     required this.text,

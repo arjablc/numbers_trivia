@@ -34,8 +34,8 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
           emit(NumberTriviaLoadingState());
           final triviaOrFailure = await specified(param: Param(number: right));
           await triviaOrFailure.fold(
-              (l) async => emit(
-                  NumberTriviaErrorState(message: _mapFailureToMessage(l))),
+              (l) async => emit(NumberTriviaErrorState(
+                  message: l.errorMessage ?? _mapFailureToMessage(l))),
               (r) async => emit(NumberTriviaLoadedState(trivia: r)));
         });
       },
@@ -45,7 +45,8 @@ class NumberTriviaBloc extends Bloc<NumberTriviaEvent, NumberTriviaState> {
       final triviaOrFailure = await random(param: NoParam());
       debugPrint(triviaOrFailure.toString());
       triviaOrFailure.fold(
-          (l) => emit(NumberTriviaErrorState(message: _mapFailureToMessage(l))),
+          (l) => emit(NumberTriviaErrorState(
+              message: l.errorMessage ?? _mapFailureToMessage(l))),
           (r) => emit(NumberTriviaLoadedState(trivia: r)));
     });
   }
