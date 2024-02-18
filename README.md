@@ -1,3 +1,9 @@
-# clean_architecture
+# Number Trivia
+A clean code flutter application based on Clean Architecture form Reso coder. 
+Used Bloc for state management, Hive for persited storage and Dio for Api Request under the hood. 
 
-A new Flutter project.
+Api from [Nummbers Api](http://numbersapi.com)
+
+
+
+

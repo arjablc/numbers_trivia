@@ -1,16 +1,13 @@
-import 'dart:ui';
+import 'package:dartz/dartz.dart';
 
 import '../../../../core/errors/exceptions.dart';
-
-import '../../../../core/platform/network_util.dart';
+import '../../../../core/errors/failure.dart';
+import '../../../../core/network/network_util.dart';
+import '../../domain/entities/number_trivia.dart';
+import '../../domain/repositories/number_trivia_repo.dart';
 import '../datasources/number_trivia_local_datasource.dart';
 import '../datasources/number_trivia_remote_datasource.dart';
 import '../models/trivia_model.dart';
-import 'package:dartz/dartz.dart';
-
-import '../../../../core/errors/failure.dart';
-import '../../domain/entities/number_trivia.dart';
-import '../../domain/repositories/number_trivia_repo.dart';
 
 class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
   final NumberTriviaLocalDataSouce localDataSouce;
@@ -23,26 +20,33 @@ class NumberTriviaRepositoryImpl implements NumberTriviaRepository {
       required this.networkUtil});
 
   @override
-  Future<Either<Failure, NumberTrivia>> getRandomTrivia() {
-    throw UnimplementedError();
+  Future<Either<Failure, NumberTrivia>> getRandomTrivia() async {
+    return await getTrivia(() {
+      return remoteDataSource.getRandomNumberTrivia();
+    });
   }
 
   @override
   Future<Either<Failure, NumberTrivia>> getSpecifiedTrivia(int number) async {
+    return await getTrivia(() {
+      return remoteDataSource.getSpecifiedNumberTrivia(number);
+    });
+  }
+
+  Future<Either<Failure, NumberTrivia>> getTrivia(
+      Future<NumberTriviaModel> Function() function) async {
     if (await networkUtil.isConnected()) {
       try {
-        final NumberTriviaModel numberTrivia =
-            await remoteDataSource.getSpecifiedNumberTrivia(number);
-
-        localDataSouce.cacheNumberTrivia(numberTrivia);
-
-        return Right(numberTrivia);
+        final remoteTrivia = await function();
+        localDataSouce.cacheNumberTrivia(remoteTrivia);
+        return Right(remoteTrivia);
       } on ServerException {
         return Left(ServerFailure());
       }
     } else {
       try {
-        return Right(await localDataSouce.getLastNumberTrivia());
+        final localTrivia = await localDataSouce.getLastNumberTrivia();
+        return Right(localTrivia);
       } on LocalException {
         return Left(LocalFailure());
       }

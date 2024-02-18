@@ -1,14 +1,15 @@
-import 'package:clean_architecture/core/errors/exceptions.dart';
-import 'package:clean_architecture/core/errors/failure.dart';
-import 'package:clean_architecture/core/platform/network_util.dart';
-import 'package:clean_architecture/features/number_trivia/data/datasources/number_trivia_local_datasource.dart';
-import 'package:clean_architecture/features/number_trivia/data/datasources/number_trivia_remote_datasource.dart';
-import 'package:clean_architecture/features/number_trivia/data/models/trivia_model.dart';
-import 'package:clean_architecture/features/number_trivia/data/repositories/number_trivia_repository_impl.dart';
 import 'package:dartz/dartz.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
+
+import 'package:clean_architecture/core/errors/exceptions.dart';
+import 'package:clean_architecture/core/errors/failure.dart';
+import 'package:clean_architecture/core/network/network_util.dart';
+import 'package:clean_architecture/features/number_trivia/data/datasources/number_trivia_local_datasource.dart';
+import 'package:clean_architecture/features/number_trivia/data/datasources/number_trivia_remote_datasource.dart';
+import 'package:clean_architecture/features/number_trivia/data/models/trivia_model.dart';
+import 'package:clean_architecture/features/number_trivia/data/repositories/number_trivia_repository_impl.dart';
 
 @GenerateNiceMocks([
   MockSpec<NumberTriviaRemoteDataSource>(),
@@ -99,7 +100,7 @@ void main() {
             .thenAnswer((realInvocation) => Future.value(tNumberTriviaModel));
         final result = await mockRepository.getSpecifiedTrivia(tNumber);
 
-        verifyNoMoreInteractions(mockRemoteDatasource);
+        verifyZeroInteractions(mockRemoteDatasource);
         verify(mockLoclDatasource.getLastNumberTrivia());
         expect(result, equals(const Right(tNumberTrivia)));
       });
@@ -108,7 +109,7 @@ void main() {
             .thenThrow(LocalException());
 
         final result = await mockRepository.getSpecifiedTrivia(tNumber);
-        verifyNoMoreInteractions(mockRemoteDatasource);
+        verifyZeroInteractions(mockRemoteDatasource);
         verify(mockLoclDatasource.getLastNumberTrivia());
         expect(result, equals(Left(LocalFailure())));
       });
